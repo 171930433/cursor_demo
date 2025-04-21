@@ -25,7 +25,11 @@ void display_person(const char *label, const T &obj)
     ImGui::Text("%s:", label);
     ImGui::Indent();
     ylt::reflection::for_each(obj, [](auto &&field, auto &&name)
-                              { ImGui::Text("%s: %s", std::string(name).c_str(), fmt::format("{}", field).c_str()); });
+                              { 
+                                  ImGui::TextUnformatted(name.data(), name.data() + name.size());
+                                  ImGui::SameLine();
+                                  ImGui::Text(": %s", fmt::format("{}", field).c_str()); 
+                              });
     ImGui::Unindent();
 }
 
