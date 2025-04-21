@@ -42,6 +42,66 @@ void test_serialization(const person &p)
     }
 }
 
+// 显示矩阵的UI函数
+void show_matrix(const Eigen::Matrix3d &matrix)
+{
+    ImGui::Text("Matrix:");
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            ImGui::SameLine();
+            ImGui::Text("%.1f", matrix(i, j));
+        }
+        ImGui::NewLine();
+    }
+}
+
+// 显示格式化值的UI函数
+void show_formatted_value()
+{
+    static float value = 0.0f;
+    ImGui::SliderFloat("Value", &value, 0.0f, 100.0f);
+    ImGui::Text("%s", fmt::format("Formatted value: {:.2f}", value).c_str());
+}
+
+// 显示演示窗口的UI函数
+void show_demo_windows()
+{
+    static bool show_demo = false;
+    static bool show_implot_demo = false;
+
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("演示"))
+        {
+            ImGui::MenuItem("ImGui演示", nullptr, &show_demo);
+            ImGui::MenuItem("ImPlot演示", nullptr, &show_implot_demo);
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+
+    if (show_demo)
+        ImGui::ShowDemoWindow(&show_demo);
+    if (show_implot_demo)
+        ImPlot::ShowDemoWindow(&show_implot_demo);
+}
+
+// 主UI函数
+void show_main_window(const Eigen::Matrix3d &matrix, const person &person1)
+{
+    ImGui::Text("Hello, ImGui!");
+    show_matrix(matrix);
+    show_formatted_value();
+    test_serialization(person1);
+
+    if (ImGui::Button("Click me!"))
+    {
+        ImGui::Text("Button clicked!");
+    }
+}
+
 int main(int argc, char **argv)
 {
     // 创建一个简单的矩阵
@@ -53,58 +113,12 @@ int main(int argc, char **argv)
     // 创建一个person对象
     person person1{.id = 1, .name = "hello struct pack", .age = 20, .salary = 1024.42};
 
+    // 运行应用程序
     HelloImGui::Run(
         [&matrix, &person1]()
         {
-            static bool show_imgui_demo = false;
-            static bool show_implot_demo = false;
-            // 创建菜单栏
-            if (ImGui::BeginMainMenuBar())
-            {
-                if (ImGui::BeginMenu("演示"))
-                {
-
-                    ImGui::MenuItem("ImGui演示", nullptr, &show_imgui_demo);
-                    ImGui::MenuItem("ImPlot演示", nullptr, &show_implot_demo);
-
-                    ImGui::EndMenu();
-                }
-                ImGui::EndMainMenuBar();
-            }
-
-            // 显示ImGui和ImPlot的演示窗口
-            if (show_imgui_demo)
-                ImGui::ShowDemoWindow(&show_imgui_demo);
-            if (show_implot_demo)
-                ImPlot::ShowDemoWindow(&show_implot_demo);
-
-            // 原有的演示内容
-            ImGui::Text("Hello, ImGui!");
-
-            // 显示矩阵
-            ImGui::Text("Matrix:");
-            for (int i = 0; i < 3; ++i)
-            {
-                for (int j = 0; j < 3; ++j)
-                {
-                    ImGui::SameLine();
-                    ImGui::Text("%.1f", matrix(i, j));
-                }
-                ImGui::NewLine();
-            }
-
-            // 使用fmt格式化字符串
-            static float value = 0.0f;
-            ImGui::SliderFloat("Value", &value, 0.0f, 100.0f);
-            ImGui::Text("%s", fmt::format("Formatted value: {:.2f}", value).c_str());
-
-            // 测试序列化和显示
-            test_serialization(person1);
-
-            if (ImGui::Button("Click me!"))
-            {
-                ImGui::Text("Button clicked!");
-            }
+            show_demo_windows();
+            show_main_window(matrix, person1);
         },
         "Hello ImGui Demo");
     return 0;
