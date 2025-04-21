@@ -49,22 +49,17 @@ if(hello-imgui_POPULATED)
         ${implot_SOURCE_DIR}/implot_items.cpp
         ${implot_SOURCE_DIR}/implot_demo.cpp
     )
-    target_include_directories(imgui PUBLIC ${implot_SOURCE_DIR})
+    target_include_directories(imgui INTERFACE ${implot_SOURCE_DIR})
 endif()
 
 set(CMAKE_CXX_STANDARD 20)  # yalantinglibs需要C++20
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 hello_imgui_add_app(demo main.cpp)
+
 target_link_libraries(demo PRIVATE 
     Eigen3::Eigen 
     fmt::fmt
     yalantinglibs::yalantinglibs
-)
-
-# 添加ImPlot的头文件路径
-target_include_directories(demo PRIVATE 
-    ${implot_SOURCE_DIR}
-    ${hello-imgui_SOURCE_DIR}/external/imgui
 )
 
