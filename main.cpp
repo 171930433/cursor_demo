@@ -4,6 +4,10 @@
 #include <ylt/struct_pack.hpp>
 #include <string>
 #include <ylt/reflection/member_value.hpp>
+#include <imgui.h>
+#include <implot.h>
+#include <vector>
+#include <cmath>
 
 // 定义一个可序列化的结构体
 struct person
@@ -52,6 +56,29 @@ int main(int argc, char **argv)
     HelloImGui::Run(
         [&matrix, &person1]()
         {
+            static bool show_imgui_demo = false;
+            static bool show_implot_demo = false;
+            // 创建菜单栏
+            if (ImGui::BeginMainMenuBar())
+            {
+                if (ImGui::BeginMenu("演示"))
+                {
+
+                    ImGui::MenuItem("ImGui演示", nullptr, &show_imgui_demo);
+                    ImGui::MenuItem("ImPlot演示", nullptr, &show_implot_demo);
+
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMainMenuBar();
+            }
+
+            // 显示ImGui和ImPlot的演示窗口
+            if (show_imgui_demo)
+                ImGui::ShowDemoWindow(&show_imgui_demo);
+            if (show_implot_demo)
+                ImPlot::ShowDemoWindow(&show_implot_demo);
+
+            // 原有的演示内容
             ImGui::Text("Hello, ImGui!");
 
             // 显示矩阵
